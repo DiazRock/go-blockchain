@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	targetBits = 24
+	targetBits = 20
 	maxNonce   = math.MaxInt64
 )
 
@@ -23,7 +23,6 @@ type ProofOfWork struct {
 func NewProofOfWork(b *Block) *ProofOfWork {
 	target := big.NewInt(1)
 	target.Lsh(target, uint(256-targetBits))
-
 	pow := &ProofOfWork{block: b, target: target}
 
 	return pow
@@ -54,7 +53,6 @@ func (pow *ProofOfWork) Run() (int, []byte) {
 		hash = sha256.Sum256(data)
 		fmt.Printf("\r%x", hash)
 		hashInt.SetBytes(hash[:])
-
 		if hashInt.Cmp(pow.target) == -1 {
 			break
 		} else {
