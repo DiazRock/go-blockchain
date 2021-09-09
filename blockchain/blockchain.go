@@ -1,17 +1,17 @@
 package blockchain
 
 import (
-	blocks "github.com/DiazRock/go-blockchain/blocks"
+	blocks "github.com/DiazRock/go-blockchain/block"
 )
 
 type Blockchain struct {
-	blocks []*blocks.Block
+	Blocks []*blocks.Block
 }
 
 func (bc *Blockchain) AddBlock(data string) {
-	prevBlock := bc.blocks[len(bc.blocks)-1]
+	prevBlock := bc.Blocks[len(bc.Blocks)-1]
 	newBlock := blocks.NewBlock(data, prevBlock.Hash)
-	bc.blocks = append(bc.blocks, newBlock)
+	bc.Blocks = append(bc.Blocks, newBlock)
 }
 
 func NewGenesisBlock() *blocks.Block {
