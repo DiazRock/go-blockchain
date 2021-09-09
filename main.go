@@ -1,25 +1,13 @@
 package main
 
 import (
-	"fmt"
-	"strconv"
-
-	proof "github.com/DiazRock/go-blockchain/block"
-	blockchain "github.com/DiazRock/go-blockchain/blockchain"
+	blockchain "github.com/DiazRock/go-blockchain/blockchain_imp"
+	cli "github.com/DiazRock/go-blockchain/cli_imp"
 )
 
 func main() {
-	bc := blockchain.NewBlockchain()
-
-	bc.AddBlock("Send 1 BTC to Ivan")
-	bc.AddBlock("Send 2 more BTC to Ivan")
-
-	for _, block := range bc.Blocks {
-		fmt.Printf("Prev. hash: %x\n", block.PrevBlockHash)
-		fmt.Printf("Data: %s\n", block.Data)
-		fmt.Printf("Hash: %x\n", block.Hash)
-		pow := proof.NewProofOfWork(block)
-		fmt.Printf("PoW: %s\n", strconv.FormatBool(pow.Validate()))
-		fmt.Println()
-	}
+	Bc := blockchain.NewBlockchain()
+	defer Bc.Db.Close()
+	cli_instance := cli.CLI{Bc}
+	cli_instance.Run()
 }
