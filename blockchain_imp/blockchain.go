@@ -55,10 +55,6 @@ func (bc *Blockchain) AddBlock(data string) {
 	}
 }
 
-func NewGenesisBlock() *blocks.Block {
-	return blocks.NewBlock("Genesis Block", []byte{})
-}
-
 func NewBlockchain() *Blockchain {
 	var tip []byte
 	db, err := bolt.Open(dbFile, 0600, nil)
@@ -70,7 +66,7 @@ func NewBlockchain() *Blockchain {
 		b := tx.Bucket([]byte(blocksBucket))
 
 		if b == nil {
-			genesis := NewGenesisBlock()
+			genesis := blocks.NewGenesisBlock()
 			b, err := tx.CreateBucket([]byte(blocksBucket))
 			if err != nil {
 				log.Panic(err)

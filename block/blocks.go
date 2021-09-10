@@ -7,11 +7,13 @@ import (
 	"log"
 	"strconv"
 	"time"
+
+	transactions_imp "github.com/DiazRock/go-blockchain/transactions_imp"
 )
 
 type Block struct {
 	Timestamp     int64
-	Data          []byte
+	Transactions  []*transactions_imp.Transaction
 	PrevBlockHash []byte
 	Hash          []byte
 	Nonce         int
@@ -19,14 +21,14 @@ type Block struct {
 
 func (b *Block) SetHash() {
 	timestamp := []byte(strconv.FormatInt(b.Timestamp, 10))
-	headers := bytes.Join([][]byte{b.PrevBlockHash, b.Data, timestamp}, []byte{})
+	headers := bytes.Join([][]byte{b.PrevBlockHash, b.Transactions, timestamp}, []byte{})
 	hash := sha256.Sum256(headers)
 
 	b.Hash = hash[:]
 }
 
-func NewBlock(data string, prevBlockHash []byte) *Block {
-	block := &Block{time.Now().Unix(), []byte(data), prevBlockHash, []byte{}, 0}
+func NewBlock(transactions []*transactions_imp.Transaction, prevBlockHash []byte) *Block {
+	block := &Block{time.Now().Unix(), transactions, prevBlockHash, []byte{}, 0}
 	pow := NewProofOfWork(block)
 	nonce, hash := pow.Run()
 
@@ -57,4 +59,8 @@ func DeserializeBlock(d []byte) *Block {
 	}
 
 	return &block
+}
+
+func NewGenesisBlock(coinbase *transactions_imp.Transaction) *Block {
+	return NewBlock([]*transactions_imp.Transaction{coinbase}, []byte{})
 }
