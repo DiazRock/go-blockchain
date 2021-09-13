@@ -5,7 +5,6 @@ import (
 	"crypto/sha256"
 	"encoding/gob"
 	"log"
-	"strconv"
 	"time"
 
 	transactions_imp "github.com/DiazRock/go-blockchain/transactions_imp"
@@ -19,12 +18,16 @@ type Block struct {
 	Nonce         int
 }
 
-func (b *Block) SetHash() {
-	timestamp := []byte(strconv.FormatInt(b.Timestamp, 10))
-	headers := bytes.Join([][]byte{b.PrevBlockHash, b.Transactions, timestamp}, []byte{})
-	hash := sha256.Sum256(headers)
+func (b *Block) HashTransactions() []byte {
+	var txHashes [][]byte
+	var txHash [32]byte
 
-	b.Hash = hash[:]
+	for _, tx := range b.Transactions {
+		txHashes = append(txHashes, tx.ID)
+	}
+	txHash = sha256.Sum256(bytes.Join(txHashes, []byte{}))
+
+	return txHash[:]
 }
 
 func NewBlock(transactions []*transactions_imp.Transaction, prevBlockHash []byte) *Block {
